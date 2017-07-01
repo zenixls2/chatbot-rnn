@@ -1,0 +1,4 @@
+*.pyc
+data/
+models/
+reddit-parse/*/
