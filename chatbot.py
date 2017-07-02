@@ -51,6 +51,57 @@ def get_paths(input_path):
         raise ValueError('save_dir is not a valid path.')
     return model_path, os.path.join(save_dir, 'config.pkl'), os.path.join(save_dir, 'chars_vocab.pkl')
 
+def libchatbot(save_dir='models/new_save', max_length=500, beam_width=6:,
+        relevance=-1.2, temperature=1.):
+    model_path, config_path, vocab_path = get_paths(save_dir)
+    saved_args = None
+    chars = None
+    vocab = None
+    with open(config_path) as f:
+        saved_args = cPickle.load(f)
+    with open(vocab_path) as f:
+        chars, vocab = cPickle.load(f)
+    net = Model(saved_args, True)
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = tf.Session(config=config)
+    session.__enter__()
+    tf.global_variables_initializer().run()
+    saver = tf.train.Saver(net.save_variables_list())
+    saver.restore(session, model_path)
+    states = initial_state_with_relevance_masking(net, session, relevance)
+    args = {
+        'session': session,
+        'states': states
+    }
+
+    def consumer(text, args=args, net=net, vocab=vocab, max_length=max_length,
+            relevance=relevance, temperaturer=temperature, beam_width=beam_width):
+        user_input = sanitize_text(vocab, text)
+        states = args['states']
+        session = args['session']
+        states = forward_text(net, session, states, vocab,
+                '> ' + user_input + "\n>")
+        computer_response_generator = beam_search_generator(sess=session,
+            net=net, initial_state=copy.deepcopy(states), initial_sample=vocab[' '],
+            early_term_token=vocab['\n'], beam_width=beam_width,
+            forward_model_fn=forward_with_mask,
+            forward_args=(relevance, vocab['\n']), temperature=temperature)
+        result = ''
+        for i, char_token in enumerate(computer_response_generator):
+            result += chars[char_token]
+            states = forward_text(net, session, states,
+                vocab, chars[char_token])
+            if i >= max_length:
+                break
+        states = forward_text(net, session, states,
+                vocab, '\n> ')
+        args['states'] = states
+        args['session'] = session
+        return result
+    return consumer
+
+
 def sample_main(args):
     model_path, config_path, vocab_path = get_paths(args.save_dir)
     # Arguments passed to sample.py direct us to a saved model.
@@ -125,6 +176,7 @@ def initial_state_with_relevance_masking(net, sess, relevance):
     else: return [initial_state(net, sess), initial_state(net, sess)]
 
 def chatbot(net, sess, chars, vocab, max_length, beam_width, relevance, temperature):
+    print(max_length, beam_width, relevance, temperature)
     states = initial_state_with_relevance_masking(net, sess, relevance)
     while True:
         user_input = sanitize_text(vocab, raw_input('\n> '))
