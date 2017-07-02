@@ -15,7 +15,7 @@ def application(env, start_response):
     start_response('200 OK', [('Content-Type', 'text/text')])
     question = qs.get('string', None)
     if question:
-        result = consumer()
+        result = consumer(question)
         print result
         yield result
     else:
