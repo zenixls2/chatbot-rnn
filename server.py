@@ -6,6 +6,7 @@ from chatbot import libchatbot
 import urlparse
 
 consumer = libchatbot()
+consumer("Hi")
 print 'done'
 
 def application(env, start_response):
