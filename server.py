@@ -13,9 +13,14 @@ def application(env, start_response):
     qs = urlparse.parse_qs(env['QUERY_STRING'])
     print qs
     start_response('200 OK', [('Content-Type', 'text/text')])
-    result = consumer(qs['string'])
-    print result
-    yield result
+    question = qs.get('string', None)
+    if question:
+        result = consumer()
+        print result
+        yield result
+    else:
+        print "No valid question"
+        yield "Please provide me any valid question."
 
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listener.bind(('', 9000))
