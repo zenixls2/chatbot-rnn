@@ -38,7 +38,7 @@ Restoring weights...
 
 ### Run my pre-trained model
 
-- **Download [my pre-trained model](https://drive.google.com/uc?export=download&id=0B6noVJLTV1jCT29uMzliMVVRWWM)** (201 MB). The zip file extracts into a folder named "reddit". Place that folder into the "models" directory of this project.
+- **Download [my pre-trained model](https://mega.nz/#!KI5z3JQA!WITf7HC8ISAh7tTMVdGH0fncsQHCm0s-NafuHHhVX18)** (51 MB). The bzip2 file extracts into a folder named "reddit". Place that folder into the "models" directory of this project. Notice this data is not fully trained, and might not perform as well as the example shown in this README.
 
 - **Run the chatbot**. Open a terminal session and run `python chatbot.py`. Warning: this pre-trained model was trained on a diverse set of frequently off-color Reddit comments. It can (and eventually will) say things that are offensive, disturbing, bizarre or sexually explicit. It may insult minorities, it may call you names, it may accuse you of being a pedophile, it may try to seduce you. Please don't use the chatbot if these possibilities would distress you!
 
@@ -83,11 +83,11 @@ If you'd like to train your own model, you'll need training data. There are a fe
 
 - **Use Reddit data.** This is what the pre-trained model was trained on:
 
-  First, download a torrent of Reddit comments from a torrent link [listed here](https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/). You can use the single month of comments (~5 GB compressed), or you can download the entire archive (~160 GB compressed). Extract the individual bzip2 (.bz2) files contained in these archives.
+  The trained data is based on Reddit comment data provided from [here](http://files.pushshift.io/reddit/comments/RC_2017-05.bz2)(~7 GB compressed). You could find data from other months or in any other format from this [file sharing site](http://files.pushshift.io/reddit/). Extract the individual bzip2 (.bz2) files contained in these archives.
 
   Once you have your raw reddit data, place it in the `reddit-parse/reddit_data` subdirectory and use the `preprocess.py` script included in the project file to convert them into text files of appropriately formatted conversations. After preprocess is done, compress the `output.txt` using bzip2 tool and put it in data/redddit folder. This script chooses qualifying comments (must be under 200 characters, can't contain certain substrings such as 'http://', can't have been posted on certain subreddits) and assembles them into conversations of at least four lines. Coming up with good rules to curate conversations from raw reddit data is more art than science. I encourage you to play around with the parameters in the included `parser_config_standard.json` file, or to mess around with the parsing script itself, to come up with an interesting data set.
 
-  Please be aware that there is a *lot* of Reddit data included in the torrents. It is very easy to run out of memory or hard drive space. I used the entire archive (~160 GB compressed, although some files appear to be corrupted and are skipped by `reddit-parse.py`), and ran the `reddit-parse.py` script with the configuration I included as the default, which holds a million comments (several GB) in memory at a time, takes about 12 hours to run on the entire archive, and produces 2.2 GB of bzip2-compressed output. When training the model, this raw data will be converted into numpy tensors, compressed, and saved back to disk, which consumes another ~5 GB of hard drive space. I acknowledge that this may be overkill relative to the size of the model.
+  Please be aware that there is a *lot* of Reddit data included in the folder. It is very easy to run out of memory or hard drive space. The original result provided by the author use a 160GB version and is quite easily to exhaust all of your memory.
 
 Once you have training data in hand (and located in a subdirectory of the `data` directory):
 
