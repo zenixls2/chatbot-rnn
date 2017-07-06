@@ -51,7 +51,7 @@ def get_paths(input_path):
         raise ValueError('save_dir is not a valid path.')
     return model_path, os.path.join(save_dir, 'config.pkl'), os.path.join(save_dir, 'chars_vocab.pkl')
 
-def libchatbot(save_dir='models/new_save', max_length=500, beam_width=4,
+def libchatbot(save_dir='models/reddit', max_length=500, beam_width=4,
         relevance=-1.2, temperature=1.):
     model_path, config_path, vocab_path = get_paths(save_dir)
     saved_args = None

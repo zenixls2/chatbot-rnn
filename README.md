@@ -99,6 +99,13 @@ Once you have training data in hand (and located in a subdirectory of the `data`
 
   ![Alt text](/img/chatbot-training.png?raw=true)
 
+### Serve your model
+
+There are already some documentation on Tensorflow's website about how to serve your models. Besides writing on your own, I've created a [WSGI server](https://github.com/zenixls2/chatbot-rnn/blob/master/server.py) as an example for you to reference. You could use the following command to test in local:
+```bash
+curl "localhost:9000/?string=Hello%20How%20are%20you"
+```
+
 ## Thanks
 
 Thanks to Andrej Karpathy for his excellent [char-rnn](https://github.com/karpathy/char-rnn) repo, and to Sherjil Ozair for his [tensorflow port](https://github.com/sherjilozair/char-rnn-tensorflow) of char-rnn, which this repo is based on.
